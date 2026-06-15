@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TN Fitness Nutrition Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-light: #E1F5EE;
+    --green-text: #085041;
+    --amber: #EF9F27;
+    --amber-light: #FAEEDA;
+    --amber-text: #854F0B;
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --coral-text: #993C1D;
+    --blue-light: #E6F1FB;
+    --blue-text: #185FA5;
+    --bg: #F7F6F2;
+    --card: #FFFFFF;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1A1A18;
+    --text-2: #5F5E5A;
+    --text-3: #9B9A96;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--green);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+  }
+  .header-brand .logo {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-brand h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; }
+  .header-brand span { font-size: 11px; opacity: 0.75; display: block; }
+  .header-actions { display: flex; gap: 8px; }
+  .btn-outline-white {
+    border: 1.5px solid rgba(255,255,255,0.5);
+    color: #fff;
+    background: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: background 0.15s;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.15); }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+
+  /* ── Sidebar ── */
+  aside {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    padding: 12px 8px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.12s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item i { font-size: 17px; }
+  .nav-item:hover { background: var(--green-light); color: var(--green-text); }
+  .nav-item.active { background: var(--green-light); color: var(--green); font-weight: 600; }
+  .nav-item.active i { color: var(--green); }
+  .aside-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .trainer-chip {
+    background: var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-size: 12px;
+    color: var(--green-text);
+  }
+  .trainer-chip strong { display: block; margin-bottom: 2px; }
+
+  /* ── Main ── */
+  main { flex: 1; padding: 28px 32px; max-width: 860px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-title { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 16px;
+  }
+  .card-title i { color: var(--green); font-size: 18px; }
+
+  /* ── Form ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.05em; }
+  input[type=text], input[type=number], select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--green); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .goal-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .goal-btn {
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    cursor: pointer;
+    background: var(--bg);
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .goal-btn .goal-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+  .goal-btn .goal-name { font-size: 12px; font-weight: 600; color: var(--text-2); }
+  .goal-btn .goal-sub { font-size: 10px; color: var(--text-3); }
+  .goal-btn.selected { border-color: var(--green); background: var(--green-light); }
+  .goal-btn.selected .goal-name { color: var(--green); }
+
+  .diet-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .diet-btn {
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 9px 8px;
+    cursor: pointer;
+    background: var(--bg);
+    text-align: center;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-2);
+    transition: all 0.15s;
+  }
+  .diet-btn.selected { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+  .btn-primary {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.15s, transform 0.1s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary {
+    background: none;
+    color: var(--green);
+    border: 1.5px solid var(--green);
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.12s;
+  }
+  .btn-secondary:hover { background: var(--green-light); }
+
+  /* ── Metrics ── */
+  .metric-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+  .metric-card {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+  .metric-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .metric-unit { font-size: 12px; color: var(--text-2); }
+  .metric-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; font-weight: 500; letter-spacing: 0.03em; }
+
+  /* ── Badge ── */
+  .badge {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .badge-muscle { background: var(--green-light); color: var(--green); }
+  .badge-loss { background: var(--coral-light); color: var(--coral-text); }
+  .badge-gain { background: var(--amber-light); color: var(--amber-text); }
+  .badge-veg { background: #EAF3DE; color: #3B6D11; }
+  .badge-nonveg { background: var(--coral-light); color: var(--coral-text); }
+  .badge-egg { background: var(--amber-light); color: var(--amber-text); }
+
+  /* ── Meal cards ── */
+  .meal-list { display: flex; flex-direction: column; gap: 10px; }
+  .meal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .meal-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .meal-body { flex: 1; }
+  .meal-time { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(--text-3); text-transform: uppercase; margin-bottom: 2px; }
+  .meal-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .meal-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; line-height: 1.5; }
+  .macro-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .mpill {
+    font-size: 11px; font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 20px;
+  }
+  .mpill-p { background: var(--green-light); color: var(--green-text); }
+  .mpill-c { background: var(--amber-light); color: var(--amber-text); }
+  .mpill-f { background: var(--coral-light); color: var(--coral-text); }
+  .mpill-k { background: var(--bg); color: var(--text-2); border: 1px solid var(--border); }
+
+  /* ── Tips ── */
+  .tip-card {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--green-text);
+    margin-bottom: 8px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .tip-card i { color: var(--green); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Macro bars ── */
+  .bar-wrap { margin-bottom: 14px; }
+  .bar-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); margin-bottom: 5px; }
+  .bar-header strong { color: var(--text); }
+  .bar-track { height: 10px; background: var(--bg); border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; border-radius: 5px; transition: width 0.4s ease; }
+
+  /* ── Tracker ── */
+  .tracker-meal {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tracker-meal:last-child { border-bottom: none; }
+  .tracker-meal input[type=checkbox] {
+    width: 18px; height: 18px;
+    cursor: pointer;
+    accent-color: var(--green);
+    flex-shrink: 0;
+  }
+  .tracker-meal-name { flex: 1; font-size: 13px; color: var(--text); }
+  .tracker-meal-name span { font-size: 11px; color: var(--text-3); display: block; }
+  .tracker-kcal { font-size: 13px; font-weight: 600; color: var(--text); }
+
+  /* ── Weekly ── */
+  .day-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .day-pill {
+    padding: 7px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    background: var(--bg);
+    transition: all 0.12s;
+  }
+  .day-pill:hover { border-color: var(--green); color: var(--green); }
+  .day-pill.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+  /* ── Client list ── */
+  .client-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .client-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .client-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--green-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+  .client-info { flex: 1; }
+  .client-name { font-size: 14px; font-weight: 600; }
+  .client-meta { font-size: 11px; color: var(--text-3); }
+  .client-actions { display: flex; gap: 8px; }
+  .btn-sm {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text-2);
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.12s;
+  }
+  .btn-sm:hover { background: var(--green-light); color: var(--green); border-color: var(--green); }
+  .btn-sm.danger:hover { background: var(--coral-light); color: var(--coral-text); border-color: var(--coral); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast i { color: #4ade80; }
+
+  /* ── Print / Export ── */
+  @media print {
+    header, aside, .btn-primary, .btn-secondary, .btn-sm, .day-pills, .client-actions, .header-actions { display: none !important; }
+    body { background: #fff; }
+    main { padding: 0; max-width: 100%; }
+    .card { break-inside: avoid; box-shadow: none; }
+    .layout { display: block; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    aside { display: none; }
+    main { padding: 16px; }
+    .form-grid, .form-grid3 { grid-template-columns: 1fr; }
+    .metric-row { grid-template-columns: 1fr 1fr; }
+    .goal-selector { grid-template-columns: 1fr; }
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; margin-top: 20px; }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-3); }
+  .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; color: var(--border-strong); }
+  .empty-state p { font-size: 13px; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .flex-gap { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="logo">🥗</div>
+    <div>
+      <h1>TN Fitness Nutrition Planner</h1>
+      <span>Tamil Nadu style diet plans for gym trainers</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-outline-white" onclick="printPlan()"><i class="ti ti-printer"></i> Print plan</button>
+    <button class="btn-outline-white" onclick="showPage('clients')"><i class="ti ti-users"></i> Clients</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="nav-label">Main</div>
+    <button class="nav-item active" onclick="showPage('profile')" id="nav-profile">
+      <i class="ti ti-user-plus"></i> New client
+    </button>
+    <button class="nav-item" onclick="showPage('plan')" id="nav-plan">
+      <i class="ti ti-clipboard-list"></i> Diet plan
+    </button>
+    <button class="nav-item" onclick="showPage('tracker')" id="nav-tracker">
+      <i class="ti ti-chart-bar"></i> Macro tracker
+    </button>
+    <button class="nav-item" onclick="showPage('weekly')" id="nav-weekly">
+      <i class="ti ti-calendar-week"></i> Weekly planner
+    </button>
+    <div class="nav-label">Management</div>
+    <button class="nav-item" onclick="showPage('clients')" id="nav-clients">
+      <i class="ti ti-users"></i> My clients
+    </button>
+    <div class="aside-footer">
+      <div class="trainer-chip">
+        <i class="ti ti-shield-check" style="color:var(--green);"></i>
+        <strong>Trainer mode</strong>
+        All data saved locally on your device
+      </div>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- ── Profile Page ── -->
+    <div class="page active" id="page-profile">
+      <div class="page-title">Add client</div>
+      <div class="page-sub">Enter client details to generate a personalised Tamil Nadu diet plan</div>
+
+      <div class="card">
+        <div class="card-title"><i class="ti ti-user"></i> Basic information</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Full name</label>
+            <input type="text" id="inp-name" placeholder="e.g. Arjun Kumar">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Age</label>
+            <input type="number" id="inp-age" placeholder="25" min="15" max="70">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Gender</label>
+            <select id="inp-gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Activity level</label>
+            <select id="inp-activity">
+              <option value="1.2">Sedentary (desk job, no gym)</option>
+              <option value="1.375">Light (1–3 days/week)</option>
+              <option value="1.55" selected>Moderate (3–5 days/week)</option>
+              <option value="1.725">Active (6–7 days/week)</option>
+              <option value="1.9">Very active (2x training/day)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid3">
+          <div class="form-field">
+            <label class="form-label">Current weight (kg)</label>
+            <input type="number" id="inp-weight" placeholder="70" min="30" max="200">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Height (cm)</label>
+            <input type="number" id="inp-height" placeholder="170" min="140" max="220">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Target weight (kg)</label>
+            <input type="number" id="inp-target" placeholder="75">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="ti ti-target"></i> Fitness goal</div>
+        <div class="goal-selector">
+          <div class="goal-btn selected" onclick="selectGoal('muscle', this)">
+            <span class="goal-icon">💪</span>
+            <div class="goal-name">Muscle building</div>
+            <div class="goal-sub">Calorie surplus + high protein</div>
+          </div>
+          <div class="goal-btn" onclick="selectGoal('loss', this)">
+            <span class="goal-icon">🔥</span>
+            <div class="goal-name">Weight loss</div>
+            <div class="goal-sub">Calorie deficit + fibre rich</div>
+          </div>
+          <div class="goal-btn" onclick="selectGoal('gain', this)">
+            <span class="goal-icon">📈</span>
+            <div class="goal-name">Weight gain</div>
+            <div class="goal-sub">High calorie + healthy fats</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="ti ti-leaf"></i> Diet preference</div>
+        <div class="diet-selector">
+          <div class="diet-btn selected" onclick="selectDiet('veg', this)">🌱 Vegetarian</div>
+          <div class="diet-btn" onclick="selectDiet('nonveg', this)">🍗 Non-vegetarian</div>
+          <div class="diet-btn" onclick="selectDiet('eggetarian', this)">🥚 Eggetarian</div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Allergies / foods to avoid</label>
+          <input type="text" id="inp-allergies" placeholder="e.g. groundnuts, dairy, brinjal">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><i class="ti ti-notes"></i> Trainer notes (optional)</div>
+        <div class="form-field">
+          <textarea id="inp-notes" placeholder="Any special health conditions, trainer observations, supplement use..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="generatePlan()" style="width:100%; justify-content:center; padding:14px;">
+        <i class="ti ti-sparkles"></i> Generate Tamil Nadu diet plan
+      </button>
+    </div>
+
+    <!-- ── Plan Page ── -->
+    <div class="page" id="page-plan">
+      <div id="plan-content">
+        <div class="empty-state">
+          <i class="ti ti-clipboard-list"></i>
+          <p>No plan yet — fill in the client profile and click "Generate Tamil Nadu diet plan"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tracker Page ── -->
+    <div class="page" id="page-tracker">
+      <div id="tracker-content">
+        <div class="empty-state">
+          <i class="ti ti-chart-bar"></i>
+          <p>Generate a diet plan first to track daily macros</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Weekly Page ── -->
+    <div class="page" id="page-weekly">
+      <div id="weekly-content">
+        <div class="empty-state">
+          <i class="ti ti-calendar-week"></i>
+          <p>Generate a diet plan first to see the weekly meal planner</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Clients Page ── -->
+    <div class="page" id="page-clients">
+      <div class="flex-between">
+        <div>
+          <div class="page-title">My clients</div>
+          <div class="page-sub">Saved client profiles and diet plans</div>
+        </div>
+        <button class="btn-primary" onclick="showPage('profile')"><i class="ti ti-user-plus"></i> New client</button>
+      </div>
+      <div id="clients-list">
+        <div class="empty-state">
+          <i class="ti ti-users"></i>
+          <p>No clients saved yet. Generate a plan and save it to build your client list.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg">Saved!</span></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────
+const MEALS = {
+  veg: {
+    muscle: [
+      { time:"6:30 AM", name:"Sprouted moong + ragi kanji", desc:"1 cup sprouted green gram + 1 glass ragi porridge with jaggery & cardamom", p:18, c:52, f:4, kcal:320, icon:"🌱", bg:"#E1F5EE" },
+      { time:"9:00 AM", name:"Idli sambar with chutneys", desc:"4 idlis + 1 bowl vegetable sambar + coconut chutney + tomato chutney", p:22, c:68, f:6, kcal:420, icon:"🍚", bg:"#FAEEDA" },
+      { time:"1:00 PM", name:"Brown rice + rajma curry", desc:"1.5 cups brown rice + rajma gravy + cucumber raita + roasted papad + salad", p:30, c:90, f:8, kcal:560, icon:"🍛", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Peanut chikki + tender coconut", desc:"2 sesame/peanut chikki pieces + 1 tender coconut water (natural electrolytes)", p:12, c:38, f:10, kcal:290, icon:"🥜", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Pesarattu + milagu rasam", desc:"3 green gram dosas + 1 bowl hot pepper rasam + small paneer side + curd", p:28, c:60, f:9, kcal:440, icon:"🫘", bg:"#E1F5EE" },
+    ],
+    loss: [
+      { time:"6:30 AM", name:"Ragi kanji (unsweetened)", desc:"1.5 cups ragi porridge with spiced buttermilk, curry leaves & asafoetida", p:10, c:35, f:3, kcal:210, icon:"🌾", bg:"#E1F5EE" },
+      { time:"9:00 AM", name:"Oats upma + mosambi juice", desc:"1 bowl oats upma with onion, carrot, peas + 1 glass sweet lime juice", p:14, c:42, f:5, kcal:275, icon:"🥣", bg:"#FAEEDA" },
+      { time:"1:00 PM", name:"Millet rice + raw banana kootu", desc:"1 cup thinai/kambu rice + raw banana kootu + 1 glass spiced buttermilk + salad", p:18, c:55, f:5, kcal:340, icon:"🍃", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Horsegram sundal + green tea", desc:"1 cup kollu sundal (spiced with curry leaves) + 1 cup green tea (no sugar)", p:13, c:28, f:3, kcal:195, icon:"🫘", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Vegetable kootu soup + chapati", desc:"1 bowl thick vegetable kootu soup + 2 wheat chapatis (no oil) + cucumber", p:14, c:40, f:3, kcal:245, icon:"🥘", bg:"#E1F5EE" },
+    ],
+    gain: [
+      { time:"6:30 AM", name:"Sesame pongal + bananas", desc:"1 large bowl ellu pongal + 2 ripe bananas + 1 glass full-fat cow milk with turmeric", p:16, c:88, f:12, kcal:530, icon:"🍌", bg:"#FAEEDA" },
+      { time:"9:00 AM", name:"Masala dosa + peanut chutney", desc:"3 masala dosas + thick peanut chutney + 1 glass panakam (jaggery lemon drink)", p:20, c:90, f:14, kcal:580, icon:"🫓", bg:"#E1F5EE" },
+      { time:"1:00 PM", name:"White rice + dal + potato fry", desc:"2.5 cups rice + toor dal tadka + potato fry + papad + 1 tsp ghee", p:24, c:115, f:16, kcal:720, icon:"🍛", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Dates + nut laddus + badam milk", desc:"4 Medjool dates + 2 home-made nut laddus + 1 glass warm badam milk", p:10, c:65, f:18, kcal:460, icon:"🧆", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Chapati + paneer curry + curd rice", desc:"3 chapatis + paneer butter masala + 1 bowl curd rice with pomegranate", p:30, c:95, f:20, kcal:690, icon:"🧀", bg:"#E1F5EE" },
+    ]
+  },
+  nonveg: {
+    muscle: [
+      { time:"6:30 AM", name:"Egg white omelette + ragi kanji", desc:"4 egg whites with onion & green chilli + 1 glass ragi porridge with jaggery", p:28, c:40, f:4, kcal:310, icon:"🥚", bg:"#FAEEDA" },
+      { time:"9:00 AM", name:"Idli + chicken keema", desc:"3 idlis + spiced chicken keema side dish + coconut chutney", p:35, c:58, f:8, kcal:460, icon:"🍚", bg:"#E1F5EE" },
+      { time:"1:00 PM", name:"Chettinad chicken rice", desc:"1.5 cups rice + chettinad chicken curry + onion raita + vegetable salad", p:45, c:82, f:10, kcal:610, icon:"🍗", bg:"#FAECE7" },
+      { time:"4:30 PM", name:"Boiled eggs + peanuts + coconut", desc:"2 boiled eggs + 1 handful roasted peanuts + 1 tender coconut water", p:22, c:20, f:14, kcal:300, icon:"🥜", bg:"#E6F1FB" },
+      { time:"8:00 PM", name:"Grilled vanjaram + pesarattu", desc:"1 grilled seer fish (vanjaram) + 2 pesarattu dosas + tomato chutney", p:48, c:50, f:9, kcal:480, icon:"🐟", bg:"#E1F5EE" },
+    ],
+    loss: [
+      { time:"6:30 AM", name:"Egg white bhurji + green tea", desc:"3 egg whites scrambled with spinach & turmeric + 1 cup green tea (no sugar)", p:18, c:6, f:2, kcal:115, icon:"🥚", bg:"#E1F5EE" },
+      { time:"9:00 AM", name:"Oats upma + boiled egg", desc:"1 bowl oats upma with onion, tomato, peas + 1 boiled egg", p:18, c:42, f:6, kcal:295, icon:"🥣", bg:"#FAEEDA" },
+      { time:"1:00 PM", name:"Millet rice + light fish curry", desc:"1 cup thinai rice + low-oil fish kuzhambu + cucumber raita", p:32, c:50, f:6, kcal:385, icon:"🐟", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Chicken pepper fry + buttermilk", desc:"Small chicken pepper dry fry (no gravy) + 1 glass spiced buttermilk", p:22, c:8, f:5, kcal:165, icon:"🍗", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Egg dosa + tomato rasam", desc:"2 egg dosas (minimal oil) + 1 bowl hot tomato rasam + salad", p:20, c:38, f:5, kcal:280, icon:"🥚", bg:"#E1F5EE" },
+    ],
+    gain: [
+      { time:"6:30 AM", name:"Egg banana milk shake", desc:"2 whole eggs + 2 ripe bananas + 1 glass full-fat milk — blended thick", p:22, c:75, f:14, kcal:520, icon:"🥛", bg:"#FAEEDA" },
+      { time:"9:00 AM", name:"Mutton kuzhambu + rice", desc:"1.5 cups white rice + mutton gravy (chettinad style) + papad + 1 tsp ghee", p:35, c:95, f:18, kcal:700, icon:"🍖", bg:"#FAECE7" },
+      { time:"1:00 PM", name:"Chicken biryani (home style)", desc:"2 cups chicken biryani + onion raita + boiled egg + brinjal fry", p:48, c:110, f:16, kcal:790, icon:"🍗", bg:"#E1F5EE" },
+      { time:"4:30 PM", name:"Peanut chikki + eggs + badam milk", desc:"2 peanut chikkis + 2 boiled eggs + 1 glass warm badam milk", p:20, c:55, f:20, kcal:480, icon:"🥜", bg:"#E6F1FB" },
+      { time:"8:00 PM", name:"Prawn fried rice + vegetable kootu", desc:"1.5 cups country prawn fried rice + vegetable kootu + 1 cup curd", p:38, c:95, f:14, kcal:670, icon:"🦐", bg:"#E1F5EE" },
+    ]
+  },
+  eggetarian: {
+    muscle: [
+      { time:"6:30 AM", name:"Egg omelette + ragi kanji", desc:"3-egg vegetable omelette (onion, tomato, green chilli) + 1 glass ragi porridge", p:26, c:42, f:8, kcal:350, icon:"🥚", bg:"#FAEEDA" },
+      { time:"9:00 AM", name:"Idli + egg bhurji", desc:"3 idlis + spiced egg bhurji (3 eggs, onion, coriander) + coconut chutney", p:30, c:58, f:9, kcal:440, icon:"🍚", bg:"#E1F5EE" },
+      { time:"1:00 PM", name:"Brown rice + egg korma", desc:"1.5 cups brown rice + egg korma curry + vegetable salad + roasted papad", p:32, c:80, f:10, kcal:545, icon:"🍳", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Boiled eggs + peanuts + coconut", desc:"2 boiled eggs + roasted peanuts + 1 tender coconut water", p:20, c:18, f:14, kcal:280, icon:"🥜", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Egg dosas + sambar", desc:"3 egg dosas (crispy, iron tawa) + thick sambar + mint chutney", p:28, c:62, f:10, kcal:455, icon:"🥚", bg:"#E1F5EE" },
+    ],
+    loss: [
+      { time:"6:30 AM", name:"Egg white omelette + green tea", desc:"3 egg whites with spinach & pepper + 1 cup green tea (no sugar, no milk)", p:18, c:5, f:1, kcal:105, icon:"🥚", bg:"#E1F5EE" },
+      { time:"9:00 AM", name:"Oats pongal + boiled egg", desc:"1 bowl oats pongal (less ghee) + 1 boiled egg + 1 cup buttermilk", p:16, c:40, f:5, kcal:270, icon:"🥣", bg:"#FAEEDA" },
+      { time:"1:00 PM", name:"Kambu rice + egg kootu", desc:"1 cup pearl millet rice + egg vegetable kootu + 1 glass spiced buttermilk", p:24, c:52, f:6, kcal:360, icon:"🍃", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Horsegram sundal + buttermilk", desc:"1 cup kollu sundal + 1 glass spiced buttermilk (cumin, curry leaves)", p:14, c:26, f:3, kcal:190, icon:"🫘", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Egg rava upma + rasam", desc:"1 bowl egg rava upma + 1 cup pepper rasam + vegetable salad", p:18, c:38, f:5, kcal:270, icon:"🥚", bg:"#E1F5EE" },
+    ],
+    gain: [
+      { time:"6:30 AM", name:"Egg banana milkshake", desc:"3 whole eggs + 2 bananas + 1 glass full-fat milk — blended smooth", p:28, c:78, f:16, kcal:580, icon:"🥛", bg:"#FAEEDA" },
+      { time:"9:00 AM", name:"Rava pongal + fried eggs", desc:"Large bowl rava pongal with ghee + cashews + 2 sunny-side up eggs", p:22, c:85, f:18, kcal:600, icon:"🍳", bg:"#E1F5EE" },
+      { time:"1:00 PM", name:"Egg biryani + raita", desc:"2 cups egg biryani + onion raita + 2 boiled eggs + papad", p:36, c:105, f:16, kcal:720, icon:"🍚", bg:"#E6F1FB" },
+      { time:"4:30 PM", name:"Sesame chikki + egg milkshake", desc:"2 sesame chikkis + egg-banana-milk shake (2 eggs)", p:18, c:62, f:16, kcal:465, icon:"🥚", bg:"#FAECE7" },
+      { time:"8:00 PM", name:"Chapati + egg paneer curry", desc:"3 chapatis + egg paneer masala + 1 bowl curd rice with pomegranate", p:34, c:90, f:18, kcal:665, icon:"🧀", bg:"#E1F5EE" },
+    ]
+  }
+};
+
+const TIPS = {
+  muscle: [
+    "Eat every 3–4 hours to maintain amino acid availability for muscle protein synthesis.",
+    "Horsegram (kollu) is a TN superfood — very high in protein. Use 3x/week in sundal or rasam.",
+    "Cold-pressed gingelly (sesame) oil is the traditional TN choice — great healthy fat for muscle building.",
+    "Tender coconut water post-workout is the best natural electrolyte drink — no sugar added.",
+    "Ragi (finger millet) is calcium-rich — ideal for bone density alongside muscle building."
+  ],
+  loss: [
+    "Replace white rice with thinai (foxtail millet) or kambu (pearl millet) — lower GI, more dietary fibre.",
+    "Milagu rasam (pepper rasam) boosts metabolism — drink 1 cup warm before main meals.",
+    "Spiced buttermilk (moru) with asafoetida and curry leaves aids digestion and is nearly calorie-free.",
+    "Horsegram (kollu rasam) has proven fat-burning properties in Siddha tradition — use 3x/week.",
+    "Avoid eating after 8 PM. Have a light early dinner for best fat loss results."
+  ],
+  gain: [
+    "Add 1 tsp of homemade ghee to every rice meal — clean healthy saturated fat for weight gain.",
+    "Sesame pongal (ellu pongal) with full-fat milk for breakfast is one of the most calorie-dense TN breakfasts.",
+    "Dates + nut laddus between meals are excellent healthy calorie boosters — traditional and nutritious.",
+    "Full-fat cow's milk twice daily is the classic TN method for gaining clean body weight.",
+    "Panakam (jaggery + lemon drink) between meals provides quick natural carbohydrates."
+  ]
+};
+
+const WEEKLY_THEMES = {
+  muscle: ["Sprouted moong Monday","Pesarattu Tuesday","Chettinad Wednesday","High-protein Thursday","Millet Friday","Egg focus Saturday","Rest & refuel Sunday"],
+  loss:   ["Millet Monday","Ragi kanji Tuesday","Sundal Wednesday","Soup Thursday","Light Friday","Active Saturday","Rest Sunday"],
+  gain:   ["Mass Monday","Biryani Tuesday","Ghee Wednesday","Calorie Thursday","Feast Friday","Protein Saturday","Rest Sunday"]
+};
+
+// ── State ──────────────────────────────────────────────────────
+let selectedGoal = 'muscle';
+let selectedDiet = 'veg';
+let currentPlan = null;
+let clients = JSON.parse(localStorage.getItem('tn-clients') || '[]');
+
+function selectGoal(g, el) {
+  selectedGoal = g;
+  document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectDiet(d, el) {
+  selectedDiet = d;
+  document.querySelectorAll('.diet-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const nav = document.getElementById('nav-' + name);
+  if (nav) nav.classList.add('active');
+  if (name === 'clients') renderClients();
+}
+
+function calcBMR(w, h, a, g) {
+  return g === 'male' ? 10*w + 6.25*h - 5*a + 5 : 10*w + 6.25*h - 5*a - 161;
+}
+
+function generatePlan() {
+  const name     = document.getElementById('inp-name').value.trim() || 'Client';
+  const age      = parseInt(document.getElementById('inp-age').value) || 25;
+  const gender   = document.getElementById('inp-gender').value;
+  const activity = parseFloat(document.getElementById('inp-activity').value);
+  const weight   = parseFloat(document.getElementById('inp-weight').value) || 70;
+  const height   = parseFloat(document.getElementById('inp-height').value) || 170;
+  const target   = parseFloat(document.getElementById('inp-target').value) || (weight + (selectedGoal === 'loss' ? -5 : 5));
+  const allergies = document.getElementById('inp-allergies').value.trim();
+  const notes    = document.getElementById('inp-notes').value.trim();
+
+  const bmr = calcBMR(weight, height, age, gender);
+  const tdee = Math.round(bmr * activity);
+  const calAdj = { muscle: 300, loss: -500, gain: 500 };
+  const targetCal = tdee + calAdj[selectedGoal];
+
+  const meals = MEALS[selectedDiet][selectedGoal];
+  const totals = meals.reduce((a, m) => ({ p: a.p + m.p, c: a.c + m.c, f: a.f + m.f, kcal: a.kcal + m.kcal }), { p:0, c:0, f:0, kcal:0 });
+
+  const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+
+  currentPlan = { name, age, gender, weight, height, target, activity, goal: selectedGoal, diet: selectedDiet, targetCal, totals, meals, allergies, notes, bmi, tdee };
+
+  // ── Save client ──
+  const existing = clients.findIndex(c => c.name.toLowerCase() === name.toLowerCase());
+  const clientData = { name, age, gender, weight, height, target, goal: selectedGoal, diet: selectedDiet, bmi, tdee, targetCal, savedAt: new Date().toLocaleDateString('en-IN') };
+  if (existing >= 0) clients[existing] = clientData;
+  else clients.unshift(clientData);
+  localStorage.setItem('tn-clients', JSON.stringify(clients));
+
+  renderPlan();
+  renderTracker();
+  renderWeekly();
+  showPage('plan');
+  showToast(`✅ Diet plan generated for ${name}`);
+}
+
+function renderPlan() {
+  const { name, weight, target, goal, diet, targetCal, totals, meals, bmi, tdee } = currentPlan;
+  const goalClass = { muscle: 'badge-muscle', loss: 'badge-loss', gain: 'badge-gain' }[goal];
+  const goalLabel = { muscle: '💪 Muscle building', loss: '🔥 Weight loss', gain: '📈 Weight gain' }[goal];
+  const dietLabel = { veg: '🌱 Vegetarian', nonveg: '🍗 Non-vegetarian', eggetarian: '🥚 Eggetarian' }[diet];
+
+  let html = `
+    <div class="flex-between" style="flex-wrap:wrap; gap:10px;">
+      <div>
+        <div class="page-title">${name}'s diet plan</div>
+        <div class="page-sub">${dietLabel} · ${weight}kg → ${target}kg · BMI ${bmi}</div>
+      </div>
+      <div class="flex-gap">
+        <span class="badge ${goalClass}">${goalLabel}</span>
+        <button class="btn-secondary" onclick="printPlan()"><i class="ti ti-printer"></i> Print</button>
+        <button class="btn-secondary" onclick="showPage('profile')"><i class="ti ti-edit"></i> Edit</button>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric-card"><div class="metric-val">${targetCal}</div><div class="metric-unit">kcal/day</div><div class="metric-lbl">Target calories</div></div>
+      <div class="metric-card"><div class="metric-val">${totals.p}g</div><div class="metric-unit">protein</div><div class="metric-lbl">Daily target</div></div>
+      <div class="metric-card"><div class="metric-val">${totals.c}g</div><div class="metric-unit">carbs</div><div class="metric-lbl">Daily target</div></div>
+      <div class="metric-card"><div class="metric-val">${totals.f}g</div><div class="metric-unit">fats</div><div class="metric-lbl">Daily target</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-fork-knife"></i> Daily meals — Tamil Nadu style</div>
+      <div class="meal-list">
+  `;
+
+  meals.forEach(m => {
+    html += `
+      <div class="meal-card">
+        <div class="meal-icon-wrap" style="background:${m.bg};">${m.icon}</div>
+        <div class="meal-body">
+          <div class="meal-time"><i class="ti ti-clock" style="font-size:10px;"></i> ${m.time}</div>
+          <div class="meal-name">${m.name}</div>
+          <div class="meal-desc">${m.desc}</div>
+          <div class="macro-pills">
+            <span class="mpill mpill-p"><i class="ti ti-dumbbell" style="font-size:10px;"></i> ${m.p}g protein</span>
+            <span class="mpill mpill-c"><i class="ti ti-grain" style="font-size:10px;"></i> ${m.c}g carbs</span>
+            <span class="mpill mpill-f"><i class="ti ti-droplet" style="font-size:10px;"></i> ${m.f}g fats</span>
+            <span class="mpill mpill-k">${m.kcal} kcal</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div></div>`;
+
+  html += `<div class="card"><div class="card-title"><i class="ti ti-bulb"></i> Trainer tips</div>`;
+  TIPS[currentPlan.goal].forEach(t => {
+    html += `<div class="tip-card"><i class="ti ti-circle-check"></i><span>${t}</span></div>`;
+  });
+  html += `</div>`;
+
+  if (currentPlan.notes) {
+    html += `<div class="card"><div class="card-title"><i class="ti ti-notes"></i> Trainer notes</div><p style="font-size:13px; color:var(--text-2);">${currentPlan.notes}</p></div>`;
+  }
+
+  if (currentPlan.allergies) {
+    html += `<div class="card" style="border-color:#D85A30;"><div class="card-title" style="color:#993C1D;"><i class="ti ti-alert-triangle" style="color:#D85A30;"></i> Allergies / avoid</div><p style="font-size:13px; color:var(--coral-text);">${currentPlan.allergies}</p></div>`;
+  }
+
+  document.getElementById('plan-content').innerHTML = html;
+}
+
+function renderTracker() {
+  if (!currentPlan) return;
+  const { meals, totals, targetCal } = currentPlan;
+
+  let html = `
+    <div class="page-title">${currentPlan.name} — Macro tracker</div>
+    <div class="page-sub">Mark meals as eaten to track today's intake in real time</div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-list-check"></i> Today's meals</div>
+  `;
+
+  meals.forEach((m, i) => {
+    html += `
+      <div class="tracker-meal">
+        <input type="checkbox" id="chk${i}" onchange="updateBars()">
+        <div class="tracker-meal-name">
+          ${m.icon} ${m.name}
+          <span>${m.time}</span>
+        </div>
+        <div class="tracker-kcal">${m.kcal} kcal</div>
+      </div>
+    `;
+  });
+
+  html += `</div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-bar"></i> Progress</div>
+      <div class="bar-wrap">
+        <div class="bar-header"><strong>Calories</strong><span id="v-kcal">0 / ${targetCal} kcal</span></div>
+        <div class="bar-track"><div class="bar-fill" id="b-kcal" style="width:0%; background:var(--green);"></div></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-header"><strong>Protein</strong><span id="v-p">0 / ${totals.p}g</span></div>
+        <div class="bar-track"><div class="bar-fill" id="b-p" style="width:0%; background:var(--green);"></div></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-header"><strong>Carbohydrates</strong><span id="v-c">0 / ${totals.c}g</span></div>
+        <div class="bar-track"><div class="bar-fill" id="b-c" style="width:0%; background:var(--amber);"></div></div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-header"><strong>Fats</strong><span id="v-f">0 / ${totals.f}g</span></div>
+        <div class="bar-track"><div class="bar-fill" id="b-f" style="width:0%; background:var(--coral);"></div></div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('tracker-content').innerHTML = html;
+}
+
+function updateBars() {
+  if (!currentPlan) return;
+  const { meals, totals, targetCal } = currentPlan;
+  let p=0, c=0, f=0, kcal=0;
+  meals.forEach((m, i) => {
+    const chk = document.getElementById('chk' + i);
+    if (chk && chk.checked) { p+=m.p; c+=m.c; f+=m.f; kcal+=m.kcal; }
+  });
+  const pct = (a, b) => Math.min(100, Math.round(a/b*100));
+  document.getElementById('v-kcal').textContent = `${kcal} / ${targetCal} kcal`;
+  document.getElementById('b-kcal').style.width = pct(kcal, targetCal) + '%';
+  document.getElementById('v-p').textContent = `${p} / ${totals.p}g`;
+  document.getElementById('b-p').style.width = pct(p, totals.p) + '%';
+  document.getElementById('v-c').textContent = `${c} / ${totals.c}g`;
+  document.getElementById('b-c').style.width = pct(c, totals.c) + '%';
+  document.getElementById('v-f').textContent = `${f} / ${totals.f}g`;
+  document.getElementById('b-f').style.width = pct(f, totals.f) + '%';
+}
+
+function renderWeekly() {
+  if (!currentPlan) return;
+  const { name, goal, meals } = currentPlan;
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const themes = WEEKLY_THEMES[goal];
+  let activeDay = 0;
+
+  function dayHTML(d) {
+    const isRest = d === 6;
+    return meals.map(m => `
+      <div class="meal-card">
+        <div class="meal-icon-wrap" style="background:${m.bg};">${m.icon}</div>
+        <div class="meal-body">
+          <div class="meal-time">${m.time}</div>
+          <div class="meal-name">${m.name}</div>
+          <div class="meal-desc">${isRest ? `<span style="color:var(--coral-text);">Rest day — reduce portions by 20%.</span> ` : ''}${m.desc}</div>
+          <div class="macro-pills">
+            <span class="mpill mpill-p">${isRest ? Math.round(m.p*0.8) : m.p}g P</span>
+            <span class="mpill mpill-c">${isRest ? Math.round(m.c*0.8) : m.c}g C</span>
+            <span class="mpill mpill-k">${isRest ? Math.round(m.kcal*0.8) : m.kcal} kcal</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let html = `
+    <div class="page-title">${name} — Weekly planner</div>
+    <div class="page-sub">7-day Tamil Nadu style meal schedule — tap a day to view</div>
+    <div class="day-pills">
+      ${days.map((d, i) => `<button class="day-pill ${i===0?'active':''}" id="dp${i}" onclick="switchDay(${i})">${d.slice(0,3)}<span style="display:block;font-size:9px;opacity:0.7;">${themes[i].split(' ')[0]}</span></button>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title" id="day-theme-label"><i class="ti ti-star"></i> ${themes[0]}</div>
+      <div class="meal-list" id="day-meal-list">${dayHTML(0)}</div>
+    </div>
+  `;
+
+  document.getElementById('weekly-content').innerHTML = html;
+
+  window.switchDay = function(d) {
+    document.querySelectorAll('.day-pill').forEach((p, i) => p.classList.toggle('active', i === d));
+    document.getElementById('day-theme-label').innerHTML = `<i class="ti ti-star"></i> ${WEEKLY_THEMES[currentPlan.goal][d]}`;
+    document.getElementById('day-meal-list').innerHTML = dayHTML(d);
+  };
+}
+
+function renderClients() {
+  if (!clients.length) {
+    document.getElementById('clients-list').innerHTML = `<div class="empty-state"><i class="ti ti-users"></i><p>No clients saved yet. Generate a plan to add clients automatically.</p></div>`;
+    return;
+  }
+  const goalLabel = { muscle: '💪 Muscle', loss: '🔥 Loss', gain: '📈 Gain' };
+  const dietLabel = { veg: '🌱 Veg', nonveg: '🍗 Non-veg', eggetarian: '🥚 Egg' };
+  let html = clients.map((c, i) => `
+    <div class="client-row">
+      <div class="client-avatar">${c.name.slice(0,2).toUpperCase()}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-meta">${c.age}y · ${c.weight}kg → ${c.target}kg · BMI ${c.bmi} · ${goalLabel[c.goal]} · ${dietLabel[c.diet]} · ${c.targetCal} kcal/day · Saved ${c.savedAt}</div>
+      </div>
+      <div class="client-actions">
+        <button class="btn-sm" onclick="loadClient(${i})"><i class="ti ti-eye"></i> View plan</button>
+        <button class="btn-sm danger" onclick="deleteClient(${i})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('clients-list').innerHTML = `<div class="client-list">${html}</div>`;
+}
+
+function loadClient(i) {
+  const c = clients[i];
+  // pre-fill form and regenerate
+  document.getElementById('inp-name').value = c.name;
+  document.getElementById('inp-age').value = c.age;
+  document.getElementById('inp-gender').value = c.gender;
+  document.getElementById('inp-weight').value = c.weight;
+  document.getElementById('inp-height').value = c.height;
+  document.getElementById('inp-target').value = c.target;
+  selectedGoal = c.goal;
+  selectedDiet = c.diet;
+  document.querySelectorAll('.goal-btn').forEach((b, j) => b.classList.toggle('selected', ['muscle','loss','gain'][j] === c.goal));
+  document.querySelectorAll('.diet-btn').forEach((b, j) => b.classList.toggle('selected', ['veg','nonveg','eggetarian'][j] === c.diet));
+  generatePlan();
+}
+
+function deleteClient(i) {
+  if (!confirm(`Remove ${clients[i].name} from your client list?`)) return;
+  clients.splice(i, 1);
+  localStorage.setItem('tn-clients', JSON.stringify(clients));
+  renderClients();
+  showToast('Client removed');
+}
+
+function printPlan() {
+  window.print();
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
